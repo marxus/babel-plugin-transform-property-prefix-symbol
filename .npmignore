@@ -1,0 +1,8 @@
+node_modules
+src
+test
+*.log
+.babelrc
+.gitignore
+.npmrc
+pnpm-lock.yaml
