@@ -11,7 +11,7 @@ const prettify = str => str
 
 const transform = code => transformSync(code, {
   presets: ['@babel/env'],
-  plugins: [[plugin, { prefix: 'ס_' }]]
+  plugins: [[plugin, { prefixes: ['ס_', '_x'] }]]
 }).code;
 
 assert.transformed = (actual, expected) => {
@@ -23,7 +23,7 @@ describe('handles prefixed named properties', () => {
     const actual = `
       foo
         .ס_filter(x => x)
-        .ס_map(y => y);
+        ._xmap(y => y);
     `;
 
     const expected = `
@@ -31,9 +31,9 @@ describe('handles prefixed named properties', () => {
 
       var _symbolFor = Symbol.for;
 
-      foo[_symbolFor("filter")](function (x) {
+      foo[_symbolFor("ס_filter")](function (x) {
         return x;
-      })[_symbolFor("map")](function (y) {
+      })[_symbolFor("_xmap")](function (y) {
         return y;
       });
     `;

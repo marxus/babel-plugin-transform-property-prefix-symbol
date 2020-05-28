@@ -1,6 +1,6 @@
 {
   "name": "@marxus/babel-plugin-transform-property-prefix-symbol",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "transforms prefixed name properties to computed Symbol.for properties",
   "repository": "https://github.com/marxus/babel-plugin-transform-property-prefix-symbol",
   "author": "Amit Marcus <marxus@gmail.com>",

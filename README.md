@@ -7,10 +7,11 @@ transforms prefixed named properties to computed Symbol.for properties
 **In**
 
 ```js
-// { prefix: "ס_" } (any valid unicode js variable string is okay)
+// { prefixes: ["s_", "_x"] }
 foo
-  .ס_filter(x => x)
-  .ס_map(y => y);
+  .s_filter(x => x)
+  .s_thru(y => y)
+  ._xmap(z => z);
 ```
 
 **Out**
@@ -19,19 +20,21 @@ foo
 var _symbolFor = Symbol.for;
 
 foo
-  [_symbolFor("filter")](x => x)
-  [_symbolFor("map")](y => y);
+  [_symbolFor("s_filter")](x => x)
+  [_symbolFor("s_thru")](y => y)
+  [_symbolFor("_xmap")](z => z);
 ```
 
 **Use case (at least, my own)**
 
-defining `Object` prototype property that:
-1. is not iterable (it's a symbol property, loops and such work on named properties)
-2. won't get accidentally overwritten (specially if i'll use non-english unicode charater)
-3. won't accidentally overwrite
+extending the Object prototype with properties that:
+1. are not iterable (it's a symbol property, loops and such work on named properties)
+2. won't get accidentally overwritten by another property assignment
+3. won't accidentally overwrite existing properties
 4. enables nice chaining without a wrapper
 
 ```js
+// { prefixes: ["ס_"] } // any viable unicode javascript variable name is okay.
 Object.prototype.ס_reduce = function(...args) {
   return _.reduce(this, ...args);
 };
@@ -44,10 +47,11 @@ obj.ס_reduce((result, value, key) => {
 }, { });
 ```
 
-**WTF is "ס"?**
+**WTF is "ס" in your example?**
 
 "ס" is the hebrew character that sounds like S (Symbol)<br/>
-and also the first character for the hebrew words "Semel" and "Siman" (which both translates to Symbol)
+and also the first character for the hebrew words "Semel" and "Siman" (which both translates to Symbol)<br/>
+just my personal pick for a prefix, pick your own...
 
 ## Installation
 
@@ -66,7 +70,7 @@ $ npm install @marxus/babel-plugin-transform-property-prefix-symbol --save-dev
   "plugins": [
     [
       "@marxus/transform-property-prefix-symbol",
-      { "prefix": "s_" }
+      { "prefixes": ["s_"] }
     ]
   ]
 }
@@ -74,12 +78,12 @@ $ npm install @marxus/babel-plugin-transform-property-prefix-symbol --save-dev
 
 ### Via Node API
 
-```javascript
+```js
 require("babel-core").transform("code", {
   plugins: [
     [
       "@marxus/transform-property-prefix-symbol",
-      { prefix: "s_" }
+      { prefixes: ["s_"] }
     ]
   ]
 });

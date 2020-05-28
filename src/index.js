@@ -10,7 +10,7 @@ export default declare(api => {
 
     visitor: {
       Program(path, { opts }) {
-        if (!opts.prefix) return;
+        if (!opts.prefixes) return;
 
         const { node, scope } = path;
         const symbolFor = path.setData(
@@ -21,16 +21,20 @@ export default declare(api => {
       },
 
       MemberExpression(path, { opts, file }) {
-        if (!opts.prefix) return;
+        if (!opts.prefixes) return;
 
         const { node } = path;
         let { property } = node;
-        if (node.computed || !property.name.startsWith(opts.prefix))
+        if (node.computed)
           return;
 
-        const symbolFor = file.path.getData("symbolFor");
-        property.name = `${symbolFor}("${property.name.replace(opts.prefix, '')}")`;
-        node.computed = true;
+        for (const prefix of opts.prefixes)
+          if (property.name.startsWith(prefix)) {
+            const symbolFor = file.path.getData("symbolFor");
+            property.name = `${symbolFor}("${property.name}")`;
+            node.computed = true;
+            break;
+          }
       },
     },
   };
